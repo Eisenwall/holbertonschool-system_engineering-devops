@@ -1,0 +1,28 @@
+Infrastructure Overview
+
+This design improves the distributed infrastructure by adding security layers (Firewalls and SSL) and observability (Monitoring). It consists of one load balancer and two application servers, all protected and tracked.
+New Components and Their Roles
+
+    Firewalls (3 total): One for each server. They protect the infrastructure by filtering incoming and outgoing traffic based on defined security rules, blocking unauthorized access.
+
+    SSL Certificate: Used to encrypt data transmitted between the user's browser and the web server via HTTPS. This ensures data privacy and protects against eavesdropping.
+
+    Monitoring Clients: Installed on each server to collect metrics (CPU, RAM, Disk usage) and logs. This data is sent to a central service (like Sumo Logic) to track the health of the system.
+
+Infrastructure Specifics
+
+    Why HTTPS? To ensure the confidentiality and integrity of the data. It prevents "Man-in-the-Middle" attacks where sensitive information (like passwords) could be stolen.
+
+    What is Monitoring for? It allows us to visualize performance, detect errors in real-time, and get alerted before a small issue becomes a complete system failure.
+
+    How is data collected? Monitoring tools use agents (clients) running on each server that periodically push system stats and logs to a central monitoring platform.
+
+    Monitoring Web Server QPS: To monitor Queries Per Second, I would configure the monitoring agent to parse the Nginx access logs or use an Nginx module that exports real-time request statistics.
+
+Identified Issues and Limitations
+
+    SSL Termination at the Load Balancer: Terminating SSL at the load balancer means traffic is decrypted there and sent to the application servers via plain HTTP. If the internal network is compromised, internal traffic can be intercepted.
+
+    Single Writable Database: While we have a replica, only one MySQL server (Primary) can accept Writes. If it fails, the application cannot save any new data until a manual intervention or failover occurs.
+
+    Identical Components (Bloated Servers): Each server runs a web server, an app server, and a database. This causes resource contention (they compete for CPU/RAM) and makes it impossible to scale the database independently from the web server.
