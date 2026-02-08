@@ -1,0 +1,42 @@
+Infrastructure Overview
+
+This infrastructure expands the simple stack into a distributed system using three servers: one dedicated to load balancing and two acting as application nodes.
+New Components and Their Roles
+
+    Load Balancer (HAproxy): I added a load balancer to distribute incoming traffic among the two application servers. This prevents any single server from becoming a bottleneck and increases the capacity of the system.
+
+    Second Web/App Server: Adding a second server provides redundancy. If one server goes down, the other can still serve traffic.
+
+Load Balancer Specifics
+
+    Algorithm: The load balancer is configured with the Round Robin algorithm. This algorithm works by rotating each new request to the next server in the list (e.g., Server 1 gets the first request, Server 2 gets the second, and so on), ensuring an equal distribution of the load.
+
+    Setup: This is an Active-Active setup.
+
+        Active-Active: Both servers are actively receiving and processing traffic simultaneously.
+
+        Active-Passive: Only one server (Active) processes traffic while the other (Passive) remains on standby, only taking over if the Active server fails.
+
+Database Cluster (Primary-Replica)
+
+    How it works: In a Primary-Replica (Master-Slave) setup, one node (Primary) is responsible for all data modifications. The second node (Replica) synchronizes its data with the Primary.
+
+    Primary vs. Replica: * Primary node: The application sends all Write operations (INSERT, UPDATE, DELETE) to this node.
+
+        Replica node: This node is used for Read operations (SELECT). This offloads work from the Primary and provides a data backup.
+
+Identified Issues and Limitations
+
+    SPOF (Single Points of Failure):
+
+        The Load Balancer is a SPOF. If HAproxy fails, the entire site is down.
+
+        The Primary Database is a SPOF for all write operations.
+
+    Security Issues:
+
+        No Firewall: There is no security layer to block unauthorized access or malicious traffic.
+
+        No HTTPS: Traffic is sent over plain HTTP, meaning data is not encrypted and can be intercepted.
+
+    No Monitoring: There is no system in place to track server health, performance metrics, or alert the team if a service fails.
