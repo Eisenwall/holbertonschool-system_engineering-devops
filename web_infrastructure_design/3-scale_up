@@ -1,0 +1,20 @@
+Infrastructure Overview
+
+This infrastructure is designed for high scalability and availability. It eliminates the Single Point of Failure at the load balancer level and separates the different layers of the stack (Web, App, and Database) onto dedicated servers.
+New Components and Their Roles
+
+    Load Balancer Cluster (HAProxy): I added a second load balancer to form a cluster. This ensures that if the primary load balancer fails, the secondary one can take over immediately (High Availability).
+
+    Separated Web Server (Nginx): The web server is now on its own dedicated server. Its role is to terminate SSL, serve static content, and proxy requests to the application layer.
+
+    Separated Application Server: The application logic is moved to a dedicated server. This prevents the code execution from competing with the database or web server for CPU and RAM.
+
+    Separated Database Server (MySQL): The database now runs on its own high-performance server, allowing for better data security and specialized optimization of disk I/O.
+
+Why These Additional Elements?
+
+    Redundancy for the Entry Point: In previous tasks, the single load balancer was a SPOF. A cluster configuration ensures the website stays online even if one balancer crashes.
+
+    Vertical and Horizontal Scalability: By splitting components, we can scale each layer independently. If we have high CPU usage, we add more App servers. If we have high data load, we upgrade the Database server hardware without affecting the other layers.
+
+    Performance: Separation prevents "resource contention." For example, a heavy database query will no longer slow down the web server's ability to serve static images.
