@@ -1,0 +1,26 @@
+Diagram Link
+
+The infrastructure consists of a single server reachable via www.foobar.com at the IP address 8.8.8.8. It uses a LAMP/LEMP stack (Linux, Nginx, MySQL, PHP/Python/etc.).
+Components Explanation
+
+    Server: A physical or virtual machine that hosts the resources and services required for the website to function.
+
+    Domain Name: A human-readable address (foobar.com) that maps to a numerical IP address, making it easier for users to access the site.
+
+    DNS Record Type: The www in www.foobar.com is typically an A record (pointing to the IP 8.8.8.8) or a CNAME pointing to the root domain.
+
+    Web Server (Nginx): Software that handles HTTP requests from the user's browser and serves static content (HTML, CSS, JS). It acts as the entry point.
+
+    Application Server: The environment where the backend code (application logic) runs. It generates dynamic content by processing data.
+
+    Database (MySQL): A structured system for storing, managing, and retrieving the application's data (e.g., user accounts, posts).
+
+    Communication: The server communicates with the user's computer using the HTTP/HTTPS protocol over a TCP/IP connection.
+
+Identified Issues
+
+    SPOF (Single Point of Failure): Since there is only one server, if it fails (hardware crash, power loss), the entire website goes down.
+
+    Downtime during Maintenance: Any update that requires restarting the web server or the physical machine (e.g., deploying new code or OS patches) will result in the website being unavailable.
+
+    Scalability Issues: A single server cannot handle a high volume of traffic. If the number of users increases significantly, the CPU, RAM, or network bandwidth will become a bottleneck, leading to slow performance or crashes.
